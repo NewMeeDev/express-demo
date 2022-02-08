@@ -60,14 +60,14 @@ app.post('/api/courses', (req, res) => {
   if (error) {
     res.status(400).send(error.details[0].message);
     return;
-  };
-
-  const course = {
-    id: courses.length + 1,
-    name: req.body.name
-  };
-  courses.push(course);
-  res.send(course);
+  } else {
+    const course = {
+      id: courses.length + 1,
+      name: req.body.name
+    };
+    courses.push(course);
+    res.send(course);
+  }  
 });
 
 // PUT: update a course (http://localhost:3000/api/posts/:id)
@@ -76,16 +76,16 @@ app.put('/api/courses/:id', (req, res) => {
   const course = courses.find(c => c.id === parseInt(req.params.id));
   if (!course) {
     res.status(404).send('The course with the given ID was not found!')
-  };
+  } else {
+    const { error } = validateCourse(req.body); // { error } = result.error
+    if (error) {
+      res.status(400).send(error.details[0].message);
+      return;
+    };
 
-  const { error } = validateCourse(req.body); // { error } = result.error
-  if (error) {
-    res.status(400).send(error.details[0].message);
-    return;
-  };
-
-  course.name = req.body.name;
-  res.send(course);
+    course.name = req.body.name;
+    res.send(course);
+  }  
 });
 
 // DELETE:
@@ -94,11 +94,11 @@ app.delete('/api/courses/:id', (req, res) => {
   const course = courses.find(c => c.id === parseInt(req.params.id));
   if (!course) {
     res.status(404).send('The course with the given ID was not found!')
-  };
-
-  const index = courses.indexOf(course);
-  courses.splice(index, 1);
-  res.send(`The course ${course.name} with the id ${course.id} was successfully deleted!`);
+  } else {
+    const index = courses.indexOf(course);
+    courses.splice(index, 1);
+    res.send(`The course ${course.name} with the id ${course.id} was successfully deleted!`);
+  }  
 });
 
 
